@@ -52,5 +52,6 @@ class TestUtils(unittest.TestCase):
         for frame in self.video_stream.start_video(format='bgr'):
             if counter < 100:
                 assert frame.array
+                counter += 1
             else:
                 break
