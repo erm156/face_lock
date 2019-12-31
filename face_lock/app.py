@@ -2,15 +2,17 @@ import logging
 import time
 from datetime import datetime as dt
 import face_recognition
-import image_encoder
-import video_capture
-import servo
+from face_lock.utils import (
+    image_encoder.ImageEncoder,
+    servo.ServoController,
+    video_capture.VideoCapture
+)
 
 
 LOG_FILENAME = 'face_log.log'
 logging.basicConfig(
     filename=LOG_FILENAME,
-    level=logging.ERROR,
+    level=logging.INFO,
     format='%(asctime)s %(name)-4s %(levelname)-8s %(message)s',
     datefmt='%m/%d/%Y %H:%M:%S'
 )
@@ -23,10 +25,14 @@ known_encodings = image_encoder.encode()
 
 logging.info('Initializing video...')
 
+RESOLUTION = (480, 320)
+FRAME_RATE = 30
+VIDEO_SIZE = (480, 320)
+
 video = VideoCapture(
-    resolution=(480, 320),
-    frame_rate=30,
-    video_size=(480, 320)
+    resolution=RESOLUTION,
+    frame_rate=FRAME_RATE,
+    video_size=VIDEO_SIZE
 )
 
 servo_control = ServoController(gpio=17)
@@ -52,18 +58,13 @@ for frame in video.start_video(format='bgr'):
                     name = sorted(known_encodings.keys())[first_match]
                     face_names.append(name)
 
-                    logging.info(f'{name} @ {str(dt.now())}')
-
-                    if len(face_names) > 0:
-                        logging.info(
-                            f'{str(len(face_names))} known face(s) detected: {face_names}'
-                        )
+                    logging.info(f'****{name}****')
                     
                     PULSE_WIDTHS = [500, 1500, 500]
                     servo_control.rotate_servo(PULSE_WIDTHS)
                     continue       
                 else:
-                    face_names.append("Unknown")
+                    face_names.append('Unknown')
                     unknowns = [name for name in face_names if name == 'Unknown']
                     logging.info(f'{str(len(unknowns))} UNKNOWN face(s) detected')
 
