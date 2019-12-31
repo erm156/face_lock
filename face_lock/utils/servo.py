@@ -3,7 +3,8 @@ import pigpio
 
 
 class ServoController:
-    
+
+
     def __init__(self, gpio):
         self.gpio = gpio
         self.rotated = False

@@ -4,7 +4,8 @@ from face_recognition import load_image_file, face_encodings
 
 
 class ImageEncoder:
-    
+
+
     def __init__(self, image_dir='face_lock/data/src_images'):
         if not len([f for f in os.listdir(image_dir) if not f.startswith('.')]) == 0:
             self.image_files = sorted(os.listdir(image_dir))
@@ -19,7 +20,6 @@ class ImageEncoder:
                 )
         else:
             raise FileNotFoundError(f'No images available for encoding ({image_dir} is empty)')
-
 
     def encode(self):
         faces = [
